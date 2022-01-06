@@ -8,7 +8,7 @@ class Wire():
         self.m_activity_cycle_index = activity_cycle_index
 
 
-class AbstractModule(ABC):
+class AbstractAtomicModule(ABC):
 
     def __init__(self):
         self.m_wires = []

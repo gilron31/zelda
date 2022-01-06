@@ -1,8 +1,8 @@
 import pytest
-from zelda.module.module import AbstractModule, Wire
+from zelda.module.module import AbstractAtomicModule, Wire
 
 
-class ExampleModule(AbstractModule):
+class ExampleModule(AbstractAtomicModule):
 
     def define_core_parameters(self):
         self.m_param_dict = {"P_WIDTH": "P_WIDTH", "P_NUM_SCHIN": "P_NUM_SCHIN"}
@@ -29,7 +29,7 @@ class ExampleModule(AbstractModule):
 
 
 def test_abstract_module():
-    print("\n------------ START TEST ------------")
+    print("\n=========== START TEST ===========")
     em = ExampleModule()
     print(em.generate_module_interface())
-    print(  "------------- END TEST -------------")
+    print(  "============ END TEST ============")
