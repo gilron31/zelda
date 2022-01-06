@@ -12,8 +12,13 @@ class AbstractModule(ABC):
 
     def __init__(self):
         self.m_wires = []
-        self.m_param_dict = {}
+        self.define_core_parameters()
+        self.define_interface()
+        self.print_wires()
 
+    @abstractmethod
+    def define_core_parameters(self):
+        pass
 
     @abstractmethod
     def define_interface(self):
@@ -36,12 +41,14 @@ class AbstractModule(ABC):
         for wire in self.m_wires:
             txt += f"    {'input' if wire.m_is_input else 'output'} wire [{wire.m_width} - 1 : 0] {wire.m_name}, \n"
         return txt[:-3]
-    def print_module_interface(self):
-        txt = f"""
-module {self.m_name} #(
-{self.get_parameters_text()}
-) (
-{self.get_ios_text()}
-);
-"""
-        print(txt)
+
+    def generate_module_interface(self):
+        txt = f"module {self.m_name} #(\n" \
+             +f"{self.get_parameters_text()}\n" \
+             +f") (\n" \
+             +f"{self.get_ios_text()}\n" \
+             +f");"
+        return txt
+
+    def generate_portfolio(self):
+        pass
