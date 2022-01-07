@@ -1,10 +1,11 @@
 
 class Parameter(object):
-    def __init__(self, op, args):
-        # self.m_name = name
+    def __init__(self, op : str, args):
         self.m_op = op
         self.m_args = args
 
+    def set_name(self, name : str):
+        self.m_name = name
 
     def __add__(self, other):
         return Parameter("ADD", [self, other])

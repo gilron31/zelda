@@ -16,18 +16,19 @@ class ExampleModule(AbstractAtomicModule):
         It therefore only makes sense that you need to write them down explicitly.
 
         '''
-        p_width = AtomicParameter("P_WIDTH")
-        p_num_schin = AtomicParameter("P_NUM_SCHIN")
-        self.m_param_dict = {"P_WIDTH": p_width, "P_NUM_SCHIN": p_num_schin}
         self.m_name = "my_example_module_1"
 
-        lp_width_reduced = p_width + p_num_schin
-        lp_aux_latency = p_num_schin + 4
-        lp_aux_width = p_num_schin * 2
+        p_width = self.new_core_param("P_WIDTH")
+        p_num_schin = self.new_core_param("P_NUM_SCHIN")
 
-        self.add_wire(Wire("IN", p_width, True, 0))
-        self.add_wire(Wire("AUX_1", lp_aux_width, True, lp_aux_latency))
-        self.add_wire(Wire("OUT", p_num_schin, False, lp_width_reduced))
+
+        lp_width_reduced = self.new_localparam("LP_WIDTH_REDUCED", p_width + p_num_schin)
+        lp_aux_latency = self.new_localparam("LP_AUX_LATENCY", p_num_schin + 4)
+        lp_aux_width = self.new_localparam("LP_AUX_WIDTH", p_num_schin * 2)
+
+        self.new_wire("IN", p_width, 0, True)
+        self.new_wire("AUX_1", lp_aux_width, lp_aux_latency, True)
+        self.new_wire("OUT", p_num_schin, lp_width_reduced, False)
         print("defined the interface")
 
 
