@@ -25,16 +25,18 @@ class ExampleModule(AbstractAtomicModule):
         lp_width_reduced = self.new_localparam("LP_WIDTH_REDUCED", p_width + p_num_schin)
         lp_aux_latency = self.new_localparam("LP_AUX_LATENCY", p_num_schin + 4)
         lp_aux_width = self.new_localparam("LP_AUX_WIDTH", p_num_schin * 2)
+        lp_random_param = self.new_localparam("LP_RANDOM_PARAM", lp_aux_width * p_num_schin)
 
         self.new_wire("IN", p_width, 0, True)
         self.new_wire("AUX_1", lp_aux_width, lp_aux_latency, True)
         self.new_wire("OUT", p_num_schin, lp_width_reduced, False)
-        
+
         print("defined the interface")
 
 
 def test_abstract_module():
     print("\n=========== START TEST ===========")
     em = ExampleModule()
-    print(em.generate_module_interface())
+    # print(em.generate_module_interface())
+    print(em.generate_portfolio())
     print(  "============ END TEST ============")

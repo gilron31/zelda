@@ -39,7 +39,7 @@ class AbstractAtomicModule(ABC):
     def lp_to_portofolio_get(self, lp):
         name = lp.m_name
         name_lower = name[3:].lower()
-        return self.m_name + "_get_" + name_lower + "()" #TODO(gil): fix empty () to list all/dependent paramters
+        return self.m_name + "_get_" + name_lower + "(  TODO  )" #TODO(gil): fix empty () to list all/dependent paramters
 
     def print_wires(self):
         print(f"wires are {self.m_wires}")
@@ -52,8 +52,8 @@ class AbstractAtomicModule(ABC):
 
     def get_localparams_text(self):
         txt = "    // Derived localparams\n"
-        for p in self.m_localparam_dict.values():
-            txt += f"    parameter {p.m_name} = {self.lp_to_portofolio_get(p)}, \n"
+        for lp in self.m_localparam_dict.values():
+            txt += f"    parameter {lp.m_name} = {self.lp_to_portofolio_get(lp)}, \n"
         return txt[:-3]
 
     def get_ios_text(self):
@@ -71,5 +71,32 @@ class AbstractAtomicModule(ABC):
              +f");"
         return txt
 
+    def generate_portfolio_function(self, lp):
+        if isinstance(lp, AtomicParameter):
+            raise Exception("Wierd, need to decide what to do")
+
+        func_name = self.lp_to_portofolio_get(lp)[:-2]
+        txt = "function integer " + func_name + ";\n"
+        txt += "    begin\n"
+        txt += f"   {func_name} = 0\n"
+        for arg in lp.m_args:
+            if lp.m_op == "ADD":
+                txt += " + "
+            if lp.m_op == "MUL":
+                txt += " * "
+            if isinstance(arg, AtomicParameter):
+                txt += f"    {arg.m_name}"
+            elif isinstance(arg, Parameter):
+                assert arg in self.m_localparam_dict, f"{arg} is not in localparam dict"
+                txt += f"     {self.lp_to_portofolio_get(arg)};"
+            elif isinstance(arg, int):
+                txt += f"     {arg}"
+            txt += "\n"
+        txt += "    end\nendfunction\n"
+        return txt
+
     def generate_portfolio(self):
-        pass
+        txt = ""
+        for lp in self.m_localparam_dict.values():
+            txt += self.generate_portfolio_function(lp)
+        return txt
