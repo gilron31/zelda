@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from zelda.module.parameter import Parameter, AtomicParameter
+from zelda.module.parameter import Parameter, AtomicParameter, ManualParameter
 
 class Wire():
     def __init__(self, name, width, activity_cycle_index,  is_input):
@@ -35,6 +35,11 @@ class AbstractAtomicModule(ABC):
         param_expression.set_name(name)
         self.m_localparam_dict[name] = param_expression
         return param_expression
+
+    def new_manual_localparam(self, name):
+        param = ManualParameter(name)
+        self.m_localparam_dict[name] = param
+        return param
 
     def lp_to_portofolio_get(self, lp):
         name = lp.m_name
@@ -77,22 +82,25 @@ class AbstractAtomicModule(ABC):
         func_name = self.lp_to_portofolio_get(lp)[:-10]
         txt = "function integer " + func_name + ";\n"
         txt += "    begin\n"
-        txt += f"    {func_name} = "
-        for i, arg in enumerate(lp.m_args):
-            txt += "\n"
-            txt += "        "
-            if (i > 0):
-                if lp.m_op == "ADD":
-                    txt += "+ "
-                if lp.m_op == "MUL":
-                    txt += "* "
-            if isinstance(arg, AtomicParameter):
-                txt += f"{arg.m_name}"
-            elif isinstance(arg, Parameter):
-                assert arg in self.m_localparam_dict.values(), f"{arg} is not in localparam dict"
-                txt += f"{self.lp_to_portofolio_get(arg)}"
-            elif isinstance(arg, int):
-                txt += f"{arg}"
+        txt += f"        {func_name} = "
+        if isinstance(lp, ManualParameter):
+            txt += " \\\\TODO(you!): implement it yourself!"
+        else:
+            for i, arg in enumerate(lp.m_args):
+                txt += "\n"
+                txt += "            "
+                if (i > 0):
+                    if lp.m_op == "ADD":
+                        txt += "+ "
+                    if lp.m_op == "MUL":
+                        txt += "* "
+                if isinstance(arg, AtomicParameter):
+                    txt += f"{arg.m_name}"
+                elif isinstance(arg, Parameter):
+                    assert arg in self.m_localparam_dict.values(), f"{arg} is not in localparam dict"
+                    txt += f"{self.lp_to_portofolio_get(arg)}"
+                elif isinstance(arg, int):
+                    txt += f"{arg}"
         txt += ";\n    end\nendfunction\n"
         return txt
 

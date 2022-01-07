@@ -21,6 +21,13 @@ class Parameter(object):
         else:
             raise Exception("Unimplemented operation")
 
+class ManualParameter(Parameter):
+    def __init__(self, name):
+        self.m_name = name
+
+    def __str__(self):
+        return self.m_name
+
 class AtomicParameter(Parameter):
     def __init__(self, name):
         self.m_name = name
