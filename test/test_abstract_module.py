@@ -1,14 +1,9 @@
 import pytest
 from zelda.module.module import AbstractAtomicModule, Wire
+from zelda.module.parameter import Parameter, AtomicParameter
 
 
 class ExampleModule(AbstractAtomicModule):
-
-    def define_core_parameters(self):
-        self.m_param_dict = {"P_WIDTH": "P_WIDTH", "P_NUM_SCHIN": "P_NUM_SCHIN"}
-        self.m_name = "my_example_module_1"
-        print("Hi am example module")
-
     def define_interface(self):
         '''
         Your module has a few parameters on which it depends.
@@ -21,10 +16,18 @@ class ExampleModule(AbstractAtomicModule):
         It therefore only makes sense that you need to write them down explicitly.
 
         '''
+        p_width = AtomicParameter("P_WIDTH")
+        p_num_schin = AtomicParameter("P_NUM_SCHIN")
+        self.m_param_dict = {"P_WIDTH": p_width, "P_NUM_SCHIN": p_num_schin}
+        self.m_name = "my_example_module_1"
 
-        self.add_wire(Wire("IN", self.m_param_dict["P_WIDTH"], True, 0))
-        self.add_wire(Wire("AUX_1", self.m_param_dict["P_WIDTH"], True, 0))
-        self.add_wire(Wire("OUT", self.m_param_dict["P_WIDTH"], False, 2))
+        lp_width_reduced = p_width + p_num_schin
+        lp_aux_latency = p_num_schin + 4
+        lp_aux_width = p_num_schin * 2
+
+        self.add_wire(Wire("IN", p_width, True, 0))
+        self.add_wire(Wire("AUX_1", lp_aux_width, True, lp_aux_latency))
+        self.add_wire(Wire("OUT", p_num_schin, False, lp_width_reduced))
         print("defined the interface")
 
 

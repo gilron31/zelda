@@ -12,13 +12,8 @@ class AbstractAtomicModule(ABC):
 
     def __init__(self):
         self.m_wires = []
-        self.define_core_parameters()
         self.define_interface()
         self.print_wires()
-
-    @abstractmethod
-    def define_core_parameters(self):
-        pass
 
     @abstractmethod
     def define_interface(self):
