@@ -29,6 +29,7 @@ class ExampleModule(AbstractAtomicModule):
         self.new_wire("IN", p_width, 0, True)
         self.new_wire("AUX_1", lp_aux_width, lp_aux_latency, True)
         self.new_wire("OUT", p_num_schin, lp_width_reduced, False)
+        
         print("defined the interface")
 
 

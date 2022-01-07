@@ -36,6 +36,11 @@ class AbstractAtomicModule(ABC):
         self.m_localparam_dict[name]= param_expression
         return param_expression
 
+    def lp_to_portofolio_get(self, lp):
+        name = lp.m_name
+        name_lower = name[3:].lower()
+        return self.m_name + "_get_" + name_lower + "()" #TODO(gil): fix empty () to list all/dependent paramters
+
     def print_wires(self):
         print(f"wires are {self.m_wires}")
 
@@ -47,8 +52,8 @@ class AbstractAtomicModule(ABC):
 
     def get_localparams_text(self):
         txt = "    // Derived localparams\n"
-        for p in self.m_param_dict.values():
-            txt += f"    parameter {p.m_name} = -1, \n"
+        for p in self.m_localparam_dict.values():
+            txt += f"    parameter {p.m_name} = {self.lp_to_portofolio_get(p)}, \n"
         return txt[:-3]
 
     def get_ios_text(self):
