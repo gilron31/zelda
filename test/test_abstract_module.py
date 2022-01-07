@@ -31,9 +31,6 @@ class ExampleModule(AbstractAtomicModule):
         self.new_wire("AUX_1", lp_aux_width, lp_aux_latency, True)
         self.new_wire("OUT", p_num_schin, lp_width_reduced, False)
 
-        print("defined the interface")
-
-
 def test_abstract_module():
     print("\n=========== START TEST ===========")
     em = ExampleModule()

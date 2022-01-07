@@ -33,7 +33,7 @@ class AbstractAtomicModule(ABC):
 
     def new_localparam(self, name, param_expression):
         param_expression.set_name(name)
-        self.m_localparam_dict[name]= param_expression
+        self.m_localparam_dict[name] = param_expression
         return param_expression
 
     def lp_to_portofolio_get(self, lp):
@@ -74,29 +74,30 @@ class AbstractAtomicModule(ABC):
     def generate_portfolio_function(self, lp):
         if isinstance(lp, AtomicParameter):
             raise Exception("Wierd, need to decide what to do")
-
-        func_name = self.lp_to_portofolio_get(lp)[:-2]
+        func_name = self.lp_to_portofolio_get(lp)[:-10]
         txt = "function integer " + func_name + ";\n"
         txt += "    begin\n"
-        txt += f"   {func_name} = 0\n"
-        for arg in lp.m_args:
-            if lp.m_op == "ADD":
-                txt += " + "
-            if lp.m_op == "MUL":
-                txt += " * "
-            if isinstance(arg, AtomicParameter):
-                txt += f"    {arg.m_name}"
-            elif isinstance(arg, Parameter):
-                assert arg in self.m_localparam_dict, f"{arg} is not in localparam dict"
-                txt += f"     {self.lp_to_portofolio_get(arg)};"
-            elif isinstance(arg, int):
-                txt += f"     {arg}"
+        txt += f"    {func_name} = "
+        for i, arg in enumerate(lp.m_args):
             txt += "\n"
-        txt += "    end\nendfunction\n"
+            txt += "        "
+            if (i > 0):
+                if lp.m_op == "ADD":
+                    txt += "+ "
+                if lp.m_op == "MUL":
+                    txt += "* "
+            if isinstance(arg, AtomicParameter):
+                txt += f"{arg.m_name}"
+            elif isinstance(arg, Parameter):
+                assert arg in self.m_localparam_dict.values(), f"{arg} is not in localparam dict"
+                txt += f"{self.lp_to_portofolio_get(arg)}"
+            elif isinstance(arg, int):
+                txt += f"{arg}"
+        txt += ";\n    end\nendfunction\n"
         return txt
 
     def generate_portfolio(self):
         txt = ""
         for lp in self.m_localparam_dict.values():
-            txt += self.generate_portfolio_function(lp)
+            txt += self.generate_portfolio_function(lp) + "\n"
         return txt
