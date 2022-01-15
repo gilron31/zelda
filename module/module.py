@@ -75,7 +75,7 @@ class AbstractModule(object):
         txt += "    begin\n"
         txt += f"        {func_name} = \n"
         txt += f"{lp.get_portfolio_implementation(self)}"
-        txt += "    end\nendfunction\n"
+        txt += "\n    end\nendfunction\n"
         return txt
 
     def generate_portfolio(self):
