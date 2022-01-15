@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from zelda.module.parameter import Parameter, AtomicParameter, ManualParameter
+from zelda.module.parameter import Parameter, CoreParameter #, ManualParameter
 
 class Wire():
     def __init__(self, name, width, activity_cycle_index,  is_input):
@@ -23,7 +23,7 @@ class AbstractModule(object):
         pass
 
     def new_core_param(self, name):
-        param = AtomicParameter(name)
+        param = CoreParameter(name)
         self.m_param_dict[name] = param
         return param
 
@@ -36,10 +36,6 @@ class AbstractModule(object):
         param_expression.set_name(name)
         self.m_localparam_dict[name] = param_expression
         return param_expression
-    def lp_to_portofolio_get(self, lp):
-        name = lp.m_name
-        name_lower = name[3:].lower()
-        return self.m_name + "_get_" + name_lower + "(  TODO  )" #TODO(gil): fix empty () to list all/dependent paramters
 
     def print_wires(self):
         print(f"wires are {self.m_wires}")
@@ -53,7 +49,7 @@ class AbstractModule(object):
     def get_localparams_text(self):
         txt = "    // Derived localparams\n"
         for lp in self.m_localparam_dict.values():
-            txt += f"    parameter {lp.m_name} = {self.lp_to_portofolio_get(lp)}, \n"
+            txt += f"    parameter {lp.m_name} = {lp.get_portfolio_function_header(self)}, \n"
         return txt[:-3]
 
     def get_ios_text(self):
@@ -72,31 +68,33 @@ class AbstractModule(object):
         return txt
 
     def generate_portfolio_function(self, lp):
-        if isinstance(lp, AtomicParameter):
+        if isinstance(lp, CoreParameter):
             raise Exception("Wierd, need to decide what to do")
-        func_name = self.lp_to_portofolio_get(lp)[:-10]
+        func_name = lp.get_portfolio_function_header(self)[:-10]
         txt = "function integer " + func_name + ";\n"
         txt += "    begin\n"
-        txt += f"        {func_name} = "
-        if isinstance(lp, ManualParameter):
-            txt += " \\\\TODO(you!): implement it yourself!"
-        else:
-            for i, arg in enumerate(lp.m_args):
-                txt += "\n"
-                txt += "            "
-                if (i > 0):
-                    if lp.m_op == "ADD":
-                        txt += "+ "
-                    if lp.m_op == "MUL":
-                        txt += "* "
-                if isinstance(arg, AtomicParameter):
-                    txt += f"{arg.m_name}"
-                elif isinstance(arg, Parameter):
-                    assert arg in self.m_localparam_dict.values(), f"{arg} is not in localparam dict"
-                    txt += f"{self.lp_to_portofolio_get(arg)}"
-                elif isinstance(arg, int):
-                    txt += f"{arg}"
-        txt += ";\n    end\nendfunction\n"
+        txt += f"        {func_name} = \n"
+        txt += f"{lp.get_portfolio_implementation()}"
+
+        # if isinstance(lp, ManualParameter):
+        #     txt += " \\\\TODO(you!): implement it yourself!"
+        # else:
+        #     for i, arg in enumerate(lp.m_args):
+        #         txt += "\n"
+        #         txt += "            "
+        #         if (i > 0):
+        #             if lp.m_op == "ADD":
+        #                 txt += "+ "
+        #             if lp.m_op == "MUL":
+        #                 txt += "* "
+        #         if isinstance(arg, CoreParameter):
+        #             txt += f"{arg.m_name}"
+        #         elif isinstance(arg, Parameter):
+        #             assert arg in self.m_localparam_dict.values(), f"{arg} is not in localparam dict"
+        #             txt += f"{lp.get_portfolio_function_header(self)}"
+        #         elif isinstance(arg, int):
+        #             txt += f"{arg}"
+        txt += "    end\nendfunction\n"
         return txt
 
     def generate_portfolio(self):

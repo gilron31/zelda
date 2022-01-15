@@ -1,6 +1,6 @@
 import pytest
 from zelda.module.module import AbstractAtomicModule, Wire
-from zelda.module.parameter import Parameter, AtomicParameter
+from zelda.module.parameter import Parameter, CoreParameter
 
 
 class ExampleModule(AbstractAtomicModule):

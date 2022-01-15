@@ -1,36 +1,68 @@
+from abc import ABC, abstractmethod
+# from zelda.module.module import AbstractModule
 
-class Parameter(object):
-    def __init__(self, op : str, args):
-        self.m_op = op
-        self.m_args = args
+class Parameter(ABC):
+    def __init__(self, name : str):
+        self.m_name = name
 
     def set_name(self, name : str):
         self.m_name = name
 
     def __add__(self, other):
-        return Parameter("ADD", [self, other])
+        if isinstance(other, int):
+            return AddParameters([self, LiteralParameter(other)])
+        elif isinstance(other, Parameter):
+            return AddParameters([self, other])
+        else:
+            raise Exception("Parameter added with non-parameter type")
 
     def __mul__(self, other):
-        return Parameter("MUL", [self, other])
-
-    def __str__(self):
-        if self.m_op == 'ADD':
-            return "(" + str(self.m_args[0]) + " + " + str(self.m_args[1]) + ")"
-        elif self.m_op == 'MUL':
-            return "(" + str(self.m_args[0]) + " * " + str(self.m_args[1]) + ")"
+        if isinstance(other, int):
+            return MulParameters([self, LiteralParameter(other)])
+        elif isinstance(other, Parameter):
+            return MulParameters([self, other])
         else:
-            raise Exception("Unimplemented operation")
-
-class ManualParameter(Parameter):
-    def __init__(self, name):
-        self.m_name = name
+            raise Exception("Parameter added with non-parameter type")
 
     def __str__(self):
         return self.m_name
 
-class AtomicParameter(Parameter):
-    def __init__(self, name):
-        self.m_name = name
-
-    def __str__(self):
+    def get_portfolio_implementation(self):
         return self.m_name
+
+    # @abstractmethod
+    def get_portfolio_function_header(self, module):
+        name_lower = self.m_name[3:].lower()
+        return module.m_name + "_get_" + name_lower + "(  TODO  )"  # TODO(gil): fix empty () to list all/dependent paramters
+
+
+class CompositeParameter(Parameter):
+    def __init__(self, args):
+        self.m_args = args
+
+class AddParameters(CompositeParameter):
+    def get_portfolio_implementation(self):
+        return f"       {self.m_args[0].get_portfolio_implementation()} + \n" +\
+               f"       {self.m_args[1].get_portfolio_implementation()}"
+
+class MulParameters(CompositeParameter):
+    def get_portfolio_implementation(self):
+        return f"       {self.m_args[0].get_portfolio_implementation()} * \n" +\
+               f"       {self.m_args[1].get_portfolio_implementation()}"
+
+class LiteralParameter(Parameter):
+    def __init__(self, val):
+        self.m_val = val
+        self.m_name = str(val)
+
+# class ManualParameter(Parameter):
+#     def __init__(self, name):
+#         self.m_name = name
+#
+#     def __str__(self):
+#         return self.m_name
+
+class CoreParameter(Parameter):
+    def get_portfolio_function_header(self):
+        raise Exception("Core parameters should never be asked for their portfolio headers")
+
