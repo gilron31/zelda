@@ -67,7 +67,8 @@ class LiteralParameter(Parameter):
         return f"            {str(self.m_val)};"
 
     def get_portfolio_reference(self):
-        if self.m_name is None:
+        if self.m_name is None: #The existance of m_name signifies the difference
+                                # between an immediate type and a constant literal.
             return str(self.m_val)
         else:
             return self.get_portfolio_function_header()
