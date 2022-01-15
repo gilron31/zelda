@@ -41,19 +41,22 @@ class CompositeParameter(Parameter):
         self.m_args = args
 
 class AddParameters(CompositeParameter):
-    def get_portfolio_implementation(self):
-        return f"       {self.m_args[0].get_portfolio_implementation()} + \n" +\
-               f"       {self.m_args[1].get_portfolio_implementation()}"
+    def get_portfolio_implementation(self, module):
+        return f"       {self.m_args[0].get_portfolio_function_header(module)} + \n" +\
+               f"       {self.m_args[1].get_portfolio_function_header(module)}"
 
 class MulParameters(CompositeParameter):
-    def get_portfolio_implementation(self):
-        return f"       {self.m_args[0].get_portfolio_implementation()} * \n" +\
-               f"       {self.m_args[1].get_portfolio_implementation()}"
+    def get_portfolio_implementation(self, module):
+        return f"       {self.m_args[0].get_portfolio_function_header(module)} * \n" +\
+               f"       {self.m_args[1].get_portfolio_function_header(module)}"
 
 class LiteralParameter(Parameter):
     def __init__(self, val):
         self.m_val = val
         self.m_name = str(val)
+
+    def get_portfolio_function_header(self, module):
+        return self.m_name
 
 # class ManualParameter(Parameter):
 #     def __init__(self, name):
@@ -63,6 +66,7 @@ class LiteralParameter(Parameter):
 #         return self.m_name
 
 class CoreParameter(Parameter):
-    def get_portfolio_function_header(self):
-        raise Exception("Core parameters should never be asked for their portfolio headers")
+    def get_portfolio_function_header(self, module):
+        return self.m_name
+        # raise Exception("Core parameters should never be asked for their portfolio headers")
 

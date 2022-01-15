@@ -74,26 +74,7 @@ class AbstractModule(object):
         txt = "function integer " + func_name + ";\n"
         txt += "    begin\n"
         txt += f"        {func_name} = \n"
-        txt += f"{lp.get_portfolio_implementation()}"
-
-        # if isinstance(lp, ManualParameter):
-        #     txt += " \\\\TODO(you!): implement it yourself!"
-        # else:
-        #     for i, arg in enumerate(lp.m_args):
-        #         txt += "\n"
-        #         txt += "            "
-        #         if (i > 0):
-        #             if lp.m_op == "ADD":
-        #                 txt += "+ "
-        #             if lp.m_op == "MUL":
-        #                 txt += "* "
-        #         if isinstance(arg, CoreParameter):
-        #             txt += f"{arg.m_name}"
-        #         elif isinstance(arg, Parameter):
-        #             assert arg in self.m_localparam_dict.values(), f"{arg} is not in localparam dict"
-        #             txt += f"{lp.get_portfolio_function_header(self)}"
-        #         elif isinstance(arg, int):
-        #             txt += f"{arg}"
+        txt += f"{lp.get_portfolio_implementation(self)}"
         txt += "    end\nendfunction\n"
         return txt
 
