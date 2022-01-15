@@ -11,7 +11,7 @@ class Parameter(ABC):
 
     def __add__(self, other):
         if isinstance(other, int):
-            other = LiteralParameter(other)
+            other = LiteralParameter(other, self.m_module)
         elif isinstance(other, Parameter):
             pass
         else:
@@ -20,7 +20,7 @@ class Parameter(ABC):
 
     def __mul__(self, other):
         if isinstance(other, int):
-            other = LiteralParameter(other)
+            other = LiteralParameter(other, self.m_module)
         elif isinstance(other, Parameter):
             pass
         else:
@@ -32,6 +32,9 @@ class Parameter(ABC):
 
     def get_portfolio_implementation(self):
         return self.m_name
+
+    def get_portfolio_reference(self):
+        return self.get_portfolio_function_header()
 
     # @abstractmethod
     def get_portfolio_function_header(self):
@@ -46,28 +49,37 @@ class CompositeParameter(Parameter):
 
 class AddParameters(CompositeParameter):
     def get_portfolio_implementation(self):
-        return f"           {self.m_args[0].get_portfolio_function_header()} + \n" +\
-               f"           {self.m_args[1].get_portfolio_function_header()};"
+        return f"            {self.m_args[0].get_portfolio_reference()} + \n" +\
+               f"            {self.m_args[1].get_portfolio_reference()};"
 
 class MulParameters(CompositeParameter):
     def get_portfolio_implementation(self):
-        return f"           {self.m_args[0].get_portfolio_function_header()} * \n" +\
-               f"           {self.m_args[1].get_portfolio_function_header()};"
+        return f"            {self.m_args[0].get_portfolio_reference()} * \n" +\
+               f"            {self.m_args[1].get_portfolio_reference()};"
 
 class LiteralParameter(Parameter):
-    def __init__(self, val):
+    def __init__(self, val, module):
         self.m_val = val
-        self.m_name = str(val)
+        self.m_module = module
+        self.m_name = None
 
-    def get_portfolio_function_header(self):
-        return self.m_name
+    def get_portfolio_implementation(self):
+        return f"            {str(self.m_val)};"
+
+    def get_portfolio_reference(self):
+        if self.m_name is None:
+            return str(self.m_val)
+        else:
+            return self.get_portfolio_function_header()
 
 class ManualParameter(Parameter):
     def get_portfolio_implementation(self):
         return "// TODO(you): Implement this"
 
 class CoreParameter(Parameter):
-    def get_portfolio_function_header(self):
+    def get_portfolio_reference(self):
         return self.m_name
-        # raise Exception("Core parameters should never be asked for their portfolio headers")
+
+    def get_portfolio_function_header(self):
+        raise Exception("Core parameters should never be asked for their portfolio headers")
 
