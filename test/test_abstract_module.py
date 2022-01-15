@@ -34,6 +34,6 @@ class ExampleModule(AbstractAtomicModule):
 def test_abstract_module():
     print("\n=========== START TEST ===========")
     em = ExampleModule()
-    print(em.generate_module_interface())
+    em.generate_module_interface()
     em.generate_portfolio()
     print(  "============ END TEST ============")

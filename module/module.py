@@ -75,7 +75,7 @@ class AbstractModule(object):
              +f") (\n" \
              +f"{self.get_ios_text()}\n" \
              +f");"
-        return txt
+        export_txt_to_file(txt, f"{self.m_name}.v")
 
     def generate_portfolio_function(self, lp):
         if isinstance(lp, CoreParameter):
