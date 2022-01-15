@@ -85,8 +85,8 @@ class AbstractModule(object):
         txt += "    input integer "
         txt += "    input integer ".join([param + ";\n" for param in self.m_param_dict])
         txt += "    begin\n"
-        txt += f"        {func_name} = \n"
-        txt += f"{lp.get_portfolio_implementation()}"
+        txt += f"        {func_name} = \n            "
+        txt += "\n            ".join(lp.get_portfolio_implementation()) + ";"
         txt += "\n    end\nendfunction\n"
         return txt
 
