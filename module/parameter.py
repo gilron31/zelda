@@ -42,13 +42,13 @@ class CompositeParameter(Parameter):
 
 class AddParameters(CompositeParameter):
     def get_portfolio_implementation(self, module):
-        return f"       {self.m_args[0].get_portfolio_function_header(module)} + \n" +\
-               f"       {self.m_args[1].get_portfolio_function_header(module)}"
+        return f"        {self.m_args[0].get_portfolio_function_header(module)} + \n" +\
+               f"        {self.m_args[1].get_portfolio_function_header(module)};"
 
 class MulParameters(CompositeParameter):
     def get_portfolio_implementation(self, module):
-        return f"       {self.m_args[0].get_portfolio_function_header(module)} * \n" +\
-               f"       {self.m_args[1].get_portfolio_function_header(module)}"
+        return f"        {self.m_args[0].get_portfolio_function_header(module)} * \n" +\
+               f"        {self.m_args[1].get_portfolio_function_header(module)};"
 
 class LiteralParameter(Parameter):
     def __init__(self, val):
