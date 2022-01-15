@@ -8,9 +8,7 @@ class Wire():
         self.m_is_input = is_input
         self.m_activity_cycle_index = activity_cycle_index
 
-
-class AbstractAtomicModule(ABC):
-
+class AbstractModule(object):
     def __init__(self):
         self.m_wires = []
         self.m_param_dict = {}
@@ -19,6 +17,9 @@ class AbstractAtomicModule(ABC):
 
     @abstractmethod
     def define_interface(self):
+        pass
+
+    def get_module_implementation(self):
         pass
 
     def new_core_param(self, name):
@@ -35,12 +36,6 @@ class AbstractAtomicModule(ABC):
         param_expression.set_name(name)
         self.m_localparam_dict[name] = param_expression
         return param_expression
-
-    def new_manual_localparam(self, name):
-        param = ManualParameter(name)
-        self.m_localparam_dict[name] = param
-        return param
-
     def lp_to_portofolio_get(self, lp):
         name = lp.m_name
         name_lower = name[3:].lower()
@@ -109,3 +104,16 @@ class AbstractAtomicModule(ABC):
         for lp in self.m_localparam_dict.values():
             txt += self.generate_portfolio_function(lp) + "\n"
         return txt
+
+class AbstractCompositeModule(AbstractModule):
+    @abstractmethod
+    def define_module_implementation(self):
+        pass
+
+    def get_module_implementation(self):
+        return "// Automatically deduced implementation based on submodules, currently not implemented" #TODO(gil)
+
+class AbstractAtomicModule(AbstractModule):
+    def get_module_implementation(self):
+        return "// TODO(you): implement!"
+
