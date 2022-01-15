@@ -81,6 +81,7 @@ class AbstractModule(object):
              +f") (\n" \
              +f"{self.get_ios_text()}\n" \
              +f");\n" \
+             +f"`include \"{self.m_name}_portfolio.vh\"\n" \
              +f"\n{BACKSLASH_LINE}\n// Your Implementation starts here!!!\n{BACKSLASH_LINE}\n\n" \
              +f"\n{BACKSLASH_LINE}\n// Your Implementation ends here!!!\n{BACKSLASH_LINE}\n\n" \
              +f"endmodule"
