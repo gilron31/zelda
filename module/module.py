@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 from zelda.module.parameter import Parameter, CoreParameter, ManualParameter, LiteralParameter
+from zelda.module.file_utils import export_txt_to_file
+
+BACKSLASH_LINE = "/"*50
 
 class Wire():
     def __init__(self, name, width, activity_cycle_index,  is_input):
@@ -86,10 +89,13 @@ class AbstractModule(object):
         return txt
 
     def generate_portfolio(self):
-        txt = ""
+        txt = f"{BACKSLASH_LINE}\n// {self.m_name} portfolio\n" + \
+              f"// Core parameters are:\n" + \
+              "".join([f"//     {param} \n" for param in self.m_param_dict]) + \
+              f"{BACKSLASH_LINE}\n\n"
         for lp in self.m_localparam_dict.values():
             txt += self.generate_portfolio_function(lp) + "\n"
-        return txt
+        export_txt_to_file(txt, f"{self.m_name}_portfolio.vh")
 
 class AbstractCompositeModule(AbstractModule):
     @abstractmethod

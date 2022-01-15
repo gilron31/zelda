@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-# from zelda.module.module import AbstractModule
 
 class Parameter(ABC):
     def __init__(self, name : str, module):

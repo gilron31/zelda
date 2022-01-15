@@ -1,7 +1,5 @@
 import pytest
 from zelda.module.module import AbstractAtomicModule, Wire
-from zelda.module.parameter import Parameter, CoreParameter
-
 
 class ExampleModule(AbstractAtomicModule):
     def define_interface(self):
@@ -37,5 +35,5 @@ def test_abstract_module():
     print("\n=========== START TEST ===========")
     em = ExampleModule()
     print(em.generate_module_interface())
-    print(em.generate_portfolio())
+    em.generate_portfolio()
     print(  "============ END TEST ============")
