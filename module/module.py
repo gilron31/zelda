@@ -80,8 +80,10 @@ class AbstractModule(object):
     def generate_portfolio_function(self, lp):
         if isinstance(lp, CoreParameter):
             raise Exception("Wierd, need to decide what to do")
-        func_name = lp.get_portfolio_function_header()[:-10]
+        func_name = lp.get_portfolio_function_name()
         txt = "function integer " + func_name + ";\n"
+        txt += "    input integer "
+        txt += "    input integer ".join([param + ";\n" for param in self.m_param_dict])
         txt += "    begin\n"
         txt += f"        {func_name} = \n"
         txt += f"{lp.get_portfolio_implementation()}"
@@ -107,5 +109,5 @@ class AbstractCompositeModule(AbstractModule):
 
 class AbstractAtomicModule(AbstractModule):
     def get_module_implementation(self):
-        return "// TODO(you): implement!"
+        return "            // TODO(you): implement!"
 

@@ -36,10 +36,14 @@ class Parameter(ABC):
         return self.get_portfolio_function_header()
 
     # @abstractmethod
-    def get_portfolio_function_header(self):
+    def get_portfolio_function_name(self):
         name_lower = self.m_name[3:].lower()
-        return self.m_module.m_name + "_get_" + name_lower + "(  TODO  )"  # TODO(gil): fix empty () to list all/dependent paramters
+        return self.m_module.m_name + "_get_" + name_lower
 
+    def get_portfolio_function_header(self):
+        return self.get_portfolio_function_name() + "(" + \
+        ", ".join([param for param in self.m_module.m_param_dict]) + \
+        ")"
 
 class CompositeParameter(Parameter):
     def __init__(self, args, module):
@@ -74,7 +78,7 @@ class LiteralParameter(Parameter):
 
 class ManualParameter(Parameter):
     def get_portfolio_implementation(self):
-        return "// TODO(you): Implement this"
+        return "            // TODO(you): Implement this"
 
 class CoreParameter(Parameter):
     def get_portfolio_reference(self):
