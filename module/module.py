@@ -54,12 +54,12 @@ class AbstractModule(object):
         txt = "    // Core parameters\n"
         for p in self.m_param_dict.values():
             txt += f"    parameter {p.m_name} = -1, \n"
-        return txt[:-3]
+        return txt[:-1]
 
     def get_localparams_text(self):
         txt = "    // Derived localparams\n"
         for lp in self.m_localparam_dict.values():
-            txt += f"    parameter {lp.m_name} = {lp.get_portfolio_function_header()}, \n"
+            txt += f"    localparam {lp.m_name} = {lp.get_portfolio_function_header()}, \n"
         return txt[:-3]
 
     def get_ios_text(self):
@@ -69,12 +69,21 @@ class AbstractModule(object):
         return txt[:-3]
 
     def generate_module_interface(self):
-        txt = f"module {self.m_name} #(\n" \
+        txt = f"{BACKSLASH_LINE}\n// Module name: {self.m_name} \n" + \
+              f"// Author:\n" + \
+              f"// Description:\n" + \
+              f"// Core parameters are:\n" + \
+              "".join([f"//     {param} \n" for param in self.m_param_dict]) + \
+              f"{BACKSLASH_LINE}\n\n"
+        txt +=f"module {self.m_name} #(\n" \
              +f"{self.get_parameters_text()}\n" \
              +f"{self.get_localparams_text()}\n" \
              +f") (\n" \
              +f"{self.get_ios_text()}\n" \
-             +f");"
+             +f");\n" \
+             +f"\n{BACKSLASH_LINE}\n// Your Implementation starts here!!!\n{BACKSLASH_LINE}\n\n" \
+             +f"\n{BACKSLASH_LINE}\n// Your Implementation ends here!!!\n{BACKSLASH_LINE}\n\n" \
+             +f"endmodule"
         export_txt_to_file(txt, f"{self.m_name}.v")
 
     def generate_portfolio_function(self, lp):
