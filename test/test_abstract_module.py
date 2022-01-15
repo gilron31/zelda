@@ -25,8 +25,8 @@ class ExampleModule(AbstractAtomicModule):
         lp_aux_latency = self.new_localparam("LP_AUX_LATENCY", p_num_schin + 4)
         lp_aux_width = self.new_localparam("LP_AUX_WIDTH", p_num_schin * 2)
         lp_random_param = self.new_localparam("LP_RANDOM_PARAM", lp_aux_width * p_num_schin)
-        # lp_random_param2 = self.new_localparam("LP_RANDOM_PARAM2", 123) #TODO(gil):add support for immediate types
-        # lp_random_param3 = self.new_manual_localparam("LP_RANDOM_PARAM3")
+        lp_random_param2 = self.new_localparam("LP_RANDOM_PARAM2", 123) #TODO(gil):add support for immediate types
+        lp_random_param3 = self.new_manual_localparam("LP_RANDOM_PARAM3")
 
         self.new_wire("IN", p_width, 0, True)
         self.new_wire("AUX_1", lp_aux_width, lp_aux_latency, True)

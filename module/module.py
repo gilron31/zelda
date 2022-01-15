@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from zelda.module.parameter import Parameter, CoreParameter #, ManualParameter
+from zelda.module.parameter import Parameter, CoreParameter, ManualParameter, LiteralParameter
 
 class Wire():
     def __init__(self, name, width, activity_cycle_index,  is_input):
@@ -23,7 +23,7 @@ class AbstractModule(object):
         pass
 
     def new_core_param(self, name):
-        param = CoreParameter(name)
+        param = CoreParameter(name, self)
         self.m_param_dict[name] = param
         return param
 
@@ -33,7 +33,14 @@ class AbstractModule(object):
         return wire
 
     def new_localparam(self, name, param_expression):
+        if isinstance(param_expression, int):
+            param_expression = LiteralParameter(param_expression, self)
         param_expression.set_name(name)
+        self.m_localparam_dict[name] = param_expression
+        return param_expression
+
+    def new_manual_localparam(self, name):
+        param_expression = ManualParameter(name, self)
         self.m_localparam_dict[name] = param_expression
         return param_expression
 
@@ -49,7 +56,7 @@ class AbstractModule(object):
     def get_localparams_text(self):
         txt = "    // Derived localparams\n"
         for lp in self.m_localparam_dict.values():
-            txt += f"    parameter {lp.m_name} = {lp.get_portfolio_function_header(self)}, \n"
+            txt += f"    parameter {lp.m_name} = {lp.get_portfolio_function_header()}, \n"
         return txt[:-3]
 
     def get_ios_text(self):
@@ -70,11 +77,11 @@ class AbstractModule(object):
     def generate_portfolio_function(self, lp):
         if isinstance(lp, CoreParameter):
             raise Exception("Wierd, need to decide what to do")
-        func_name = lp.get_portfolio_function_header(self)[:-10]
+        func_name = lp.get_portfolio_function_header()[:-10]
         txt = "function integer " + func_name + ";\n"
         txt += "    begin\n"
         txt += f"        {func_name} = \n"
-        txt += f"{lp.get_portfolio_implementation(self)}"
+        txt += f"{lp.get_portfolio_implementation()}"
         txt += "\n    end\nendfunction\n"
         return txt
 
